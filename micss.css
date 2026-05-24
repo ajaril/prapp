@@ -1,0 +1,19 @@
+
+
+.vista-compacta #cuerpo_ventana_informacion_sistema .select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: calc(50% - 16px) !important;
+}
+
+hr.separador.modalcuaderno {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
+.wrapperRespuestas .itemRespuesta p.collapse:not(.show) {
+  display: none !important;
+}
+
+input.notaDestacada{
+	font-weight: bold;
+	min-width: 5rem;
+}

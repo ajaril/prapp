@@ -1,0 +1,62 @@
+body.OcultaRubricasActivado div.s-prose{
+    display: none !important;
+}
+body.OcultaRubricasActivado div.itemRespuesta{
+    display: none !important;
+}
+body.OcultaRubricasActivado div.modal-calificacion{
+    display: none !important;
+}
+body.OcultaCriteriosActivado label.mr-2{
+    display: none !important;
+}
+body.OcultaCriteriosActivado hr.modalcuaderno{
+    display: none !important;
+}
+body:not(.OcultaCriteriosActivado) label.abreviada{
+    display: none !important;
+}
+body.OcultaCriteriosActivado label.abreviada{
+    display: block !important;
+}
+#menu-seleccion {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    background: rgb(168, 248, 118);
+    border: 1px solid black;
+    padding: 10px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-titulo {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.menu-columnas {
+    display: flex;
+    gap: 20px;
+}
+
+.menu-columna {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-columna h4 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.no-visible {
+    display: none;
+}
+
+
+
+
+
