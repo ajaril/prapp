@@ -835,10 +835,10 @@ function InicializarEventos() {
                 let T_RECURSOS = document.querySelector("textarea[id='T_RECURSOS']");
                 let T_AGRDISTESPTIE = document.querySelector("textarea[id='T_AGRDISTESPTIE']");
                 let T_INSEVAL = document.querySelector("textarea[id='T_INSEVAL']");
+                VG.formularioConDatos = false;
                 if (T_ACT_TAREAS && T_METODOLOGIA && T_RECURSOS && T_AGRDISTESPTIE && T_INSEVAL &&
                     (T_ACT_TAREAS.value.trim() !== "" || T_METODOLOGIA.value.trim() !== "" || T_RECURSOS.value.trim() !== "" ||
                         T_AGRDISTESPTIE.value.trim() !== "" || T_INSEVAL.value.trim() !== "")) {
-                    //console.log("El formulario ya contiene datos.");
                     VG.formularioConDatos = true;
                 }
                 //AnadirElementosCurriculares();
@@ -884,89 +884,77 @@ function InicializarEventos() {
                 );
                 function DespuesDeRecuperarDatos() {
                     function VentanaConservarTextoPRA() {
-                        //console.log("VentanaConservarTextoPRA");                        
                         const fondo = document.createElement("div");
-                        fondo.style.position = "fixed";
-                        fondo.style.top = "0";
-                        fondo.style.left = "0";
-                        fondo.style.width = "100%";
-                        fondo.style.height = "100%";
-                        fondo.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-                        fondo.style.zIndex = "9999";
+                        Object.assign(fondo.style, {
+                            position: "fixed", top: "0", left: "0",
+                            width: "100%", height: "100%",
+                            backgroundColor: "rgba(0,0,0,0.45)", zIndex: "9999"
+                        });
 
-                        // Crear el contenedor de la ventana emergente
                         const ventana = document.createElement("div");
-                        ventana.style.position = "fixed";
-                        ventana.style.top = "50%";
-                        ventana.style.left = "50%";
-                        ventana.style.transform = "translate(-50%, -50%)";
-                        ventana.style.backgroundColor = "white";
-                        ventana.style.borderRadius = "8px";
-                        ventana.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-                        ventana.style.padding = "20px";
-                        ventana.style.textAlign = "center";
-                        ventana.style.zIndex = "10000";
+                        Object.assign(ventana.style, {
+                            position: "fixed", top: "50%", left: "50%",
+                            transform: "translate(-50%,-50%)",
+                            background: "linear-gradient(160deg,#1a3a5c 0%,#2471a3 100%)",
+                            borderRadius: "10px",
+                            boxShadow: "0 6px 24px rgba(0,0,0,0.35)",
+                            padding: "28px 32px 24px",
+                            textAlign: "center", zIndex: "10000",
+                            minWidth: "320px", fontFamily: "Arial,sans-serif"
+                        });
 
-                        // Crear el texto de la ventana emergente
+                        const titulo = document.createElement("p");
+                        titulo.textContent = "PRApp";
+                        Object.assign(titulo.style, {
+                            color: "#7ec8f5", fontWeight: "bold",
+                            fontSize: "13px", letterSpacing: "2px",
+                            textTransform: "uppercase", margin: "0 0 8px"
+                        });
+
                         const mensaje = document.createElement("p");
-                        mensaje.textContent = "El formulario ya contiene datos. ¿Qué deseas hacer?";
-                        mensaje.style.marginBottom = "20px";
+                        mensaje.textContent = "Este alumno ya tiene texto en el formulario. ¿Qué deseas hacer?";
+                        Object.assign(mensaje.style, {
+                            color: "white", fontSize: "15px",
+                            margin: "0 0 22px", lineHeight: "1.4"
+                        });
 
-                        // Crear el botón "Conservar el texto"
+                        const estiloBtn = {
+                            padding: "9px 18px", border: "none",
+                            borderRadius: "6px", cursor: "pointer",
+                            fontSize: "14px", fontWeight: "bold",
+                            margin: "0 6px"
+                        };
+
                         const botonConservar = document.createElement("button");
-                        botonConservar.textContent = "Conservar el texto";
-                        botonConservar.style.marginRight = "10px";
-                        botonConservar.style.padding = "10px 20px";
-                        botonConservar.style.border = "none";
-                        botonConservar.style.backgroundColor = "#007BFF";
-                        botonConservar.style.color = "white";
-                        botonConservar.style.borderRadius = "4px";
-                        botonConservar.style.cursor = "pointer";
+                        botonConservar.textContent = "Conservar el texto actual";
+                        Object.assign(botonConservar.style, estiloBtn, {
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            color: "white", border: "1px solid rgba(255,255,255,0.4)"
+                        });
                         botonConservar.addEventListener("click", () => {
-                            //console.log("Se ha seleccionado 'Conservar el texto'.");
                             VG.conservarContenidoPRA = true;
-                            fondo.remove(); // Eliminar la ventana emergente
+                            fondo.remove();
                         });
 
-                        // Crear el botón "Recuperar el texto del PRA anterior"
                         const botonRecuperar = document.createElement("button");
-                        botonRecuperar.textContent = "Recuperar el texto del PRA anterior";
-                        botonRecuperar.style.marginLeft = "10px";
-                        botonRecuperar.style.padding = "10px 20px";
-                        botonRecuperar.style.border = "none";
-                        botonRecuperar.style.backgroundColor = "#28A745";
-                        botonRecuperar.style.color = "white";
-                        botonRecuperar.style.borderRadius = "4px";
-                        botonRecuperar.style.cursor = "pointer";
+                        botonRecuperar.textContent = "Usar texto del PRA anterior";
+                        Object.assign(botonRecuperar.style, estiloBtn, {
+                            backgroundColor: "white", color: "#1a3a5c"
+                        });
                         botonRecuperar.addEventListener("click", () => {
-                            //console.log("Se ha seleccionado 'Recuperar el texto del PRA anterior'.");
                             VG.conservarContenidoPRA = false;
-                            if (!VG.conservarContenidoPRA) {
-                                if (T_ACT_TAREAS) {
-                                    T_ACT_TAREAS.value = VG.T_ACT_TAREASvalorAnterior;
-                                }
-                                if (T_METODOLOGIA) {
-                                    T_METODOLOGIA.value = VG.T_METODOLOGIAvalorAnterior;
-                                }
-                                if (T_RECURSOS) {
-                                    T_RECURSOS.value = VG.T_RECURSOSvalorAnterior;
-                                }
-                                if (T_AGRDISTESPTIE) {
-                                    T_AGRDISTESPTIE.value = VG.T_AGRDISTESPTIEvalorAnterior;
-                                }
-                                if (T_INSEVAL) {
-                                    T_INSEVAL.value = VG.T_INSEVALvalorAnterior;
-                                }
-                            }
-                            fondo.remove(); // Eliminar la ventana emergente
+                            if (T_ACT_TAREAS) T_ACT_TAREAS.value = VG.T_ACT_TAREASvalorAnterior;
+                            if (T_METODOLOGIA) T_METODOLOGIA.value = VG.T_METODOLOGIAvalorAnterior;
+                            if (T_RECURSOS) T_RECURSOS.value = VG.T_RECURSOSvalorAnterior;
+                            if (T_AGRDISTESPTIE) T_AGRDISTESPTIE.value = VG.T_AGRDISTESPTIEvalorAnterior;
+                            if (T_INSEVAL) T_INSEVAL.value = VG.T_INSEVALvalorAnterior;
+                            fondo.remove();
                         });
 
-                        // Agregar los elementos al contenedor de la ventana
+                        ventana.appendChild(titulo);
                         ventana.appendChild(mensaje);
                         ventana.appendChild(botonConservar);
                         ventana.appendChild(botonRecuperar);
-
-                        // Agregar la ventana y el fondo al body
                         fondo.appendChild(ventana);
                         document.body.appendChild(fondo);
                     }
