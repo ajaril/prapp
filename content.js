@@ -6,7 +6,7 @@ function VariablesGlobales() {
     let saltaVentanaApartados = true;
     let primerPase = true;
     let enMenuNecesario= true;
-    let UsarAsistentePRA = true;
+    let UsarAsistentePRA = false;
     let forzarMenuSeleccion = false;
     let limpiarMenuSeleccion = false;
     let refrescar = false;
@@ -102,6 +102,18 @@ function InicializarEventos() {
                 }
            (function MuestraCuadroDeImportación() {
 
+                // --- Utilidades compartidas ---
+                function normalizaTexto(texto) {
+                    return texto
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .toLowerCase()
+                        .replace(/\s+/g, " ")
+                        .replace(/\s*,\s*/g, ", ")
+                        .trim();
+                }
+                let mapaManualNombres = {};
+
                 // --- Para evitar mostrar varias veces la ventana ---
                 if (window.__ventanaExcelMostrada) return;
                 window.__ventanaExcelMostrada = true;
@@ -125,39 +137,238 @@ function InicializarEventos() {
                 ventana.style.background = "white";
                 ventana.style.padding = "20px";
                 ventana.style.borderRadius = "10px";
-                ventana.style.width = "400px";
+                ventana.style.minWidth = "420px";
+                ventana.style.maxWidth = "90vw";
+                ventana.style.maxHeight = "85vh";
+                ventana.style.overflowY = "auto";
                 ventana.style.boxShadow = "0 0 10px rgba(0,0,0,0.4)";
                 ventana.style.zIndex = "1000000";
+                ventana.style.boxSizing = "border-box";
 
                 // --- Título ---
                 const titulo = document.createElement("h3");
-                titulo.textContent = "Pega aquí los datos de los alumnos";
+                titulo.textContent = "Criteriapp — Importar notas";
                 titulo.style.marginTop = "0";
+                titulo.style.marginBottom = "12px";
+                titulo.style.color = "#1a5276";
                 ventana.appendChild(titulo);
 
                 // --- Textarea ---
                 const entrada = document.createElement("textarea");
                 entrada.style.width = "100%";
-                entrada.style.height = "150px";
-                entrada.placeholder = "Pega aquí los datos copiados de la hoja de cálculo.\nFormato: nombre TAB nota1 TAB nota2 TAB ...\nSi pegas una sola nota se copia a todos los criterios.\nSi pegas varias, cada una va a su criterio en orden.";
+                entrada.style.height = "90px";
+                entrada.style.boxSizing = "border-box";
+                entrada.style.fontFamily = "monospace";
+                entrada.style.fontSize = "12px";
+                entrada.style.border = "1px solid #aaa";
+                entrada.style.borderRadius = "4px";
+                entrada.style.padding = "6px";
+                entrada.style.resize = "vertical";
+                entrada.placeholder = "Pega aquí los datos copiados de la hoja de cálculo.\nFormato: Apellidos, Nombre TAB nota1 TAB nota2 ...\nSi pegas una sola nota se copia a todos los criterios.\nSi pegas varias, cada una va a su criterio en orden.";
                 ventana.appendChild(entrada);
+
+                // --- Vista previa en tabla ---
+                const previsualizacion = document.createElement("div");
+                previsualizacion.style.marginTop = "10px";
+                previsualizacion.style.overflowX = "auto";
+                ventana.appendChild(previsualizacion);
+
+                // --- Panel mapeo de nombres ---
+                const panelMapeo = document.createElement("div");
+                panelMapeo.style.marginTop = "8px";
+                ventana.appendChild(panelMapeo);
+
+                function actualizaMapeoNombres(filas) {
+                    panelMapeo.innerHTML = "";
+                    const selectAlumnado = document.querySelector("#selecbuscadoralumnado");
+                    if (!selectAlumnado) return;
+                    const nombresEnSeneca = Array.from(selectAlumnado.options)
+                        .map(o => o.textContent.trim()).filter(t => t);
+                    if (nombresEnSeneca.length === 0) return;
+                    const nombresImportacion = filas.map(f => f.split(/\t|;/)[0].trim()).filter(t => t);
+                    const noCoinciden = nombresImportacion.filter(n =>
+                        !nombresEnSeneca.some(ns => normalizaTexto(ns) === normalizaTexto(n)) && !mapaManualNombres[n]);
+                    const yaAsignados = nombresImportacion.filter(n => mapaManualNombres[n]);
+                    const totalCoinciden = nombresImportacion.length - noCoinciden.length - yaAsignados.length;
+                    if (noCoinciden.length === 0 && yaAsignados.length === 0) {
+                        const ok = document.createElement("div");
+                        ok.style.fontSize = "12px"; ok.style.color = "#27ae60"; ok.style.marginBottom = "4px";
+                        ok.textContent = "\u2713 Todos los nombres coinciden autom\u00e1ticamente";
+                        panelMapeo.appendChild(ok); return;
+                    }
+                    const resumen = document.createElement("div");
+                    resumen.style.fontSize = "12px"; resumen.style.marginBottom = "6px";
+                    resumen.style.color = noCoinciden.length > 0 ? "#c0392b" : "#e67e22";
+                    let txt = "";
+                    if (totalCoinciden > 0) txt += totalCoinciden + " coinciden \u2713  ";
+                    if (yaAsignados.length > 0) txt += yaAsignados.length + " asignados manualmente \u2713  ";
+                    if (noCoinciden.length > 0) txt += noCoinciden.length + " sin coincidencia \u26a0";
+                    resumen.textContent = txt.trim();
+                    panelMapeo.appendChild(resumen);
+                    function creaFilaMapeo(nombre, color) {
+                        const fila = document.createElement("div");
+                        fila.style.cssText = "display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:12px;";
+                        const etiq = document.createElement("span");
+                        etiq.textContent = nombre; etiq.title = nombre;
+                        etiq.style.cssText = "color:" + color + ";flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+                        const flecha = document.createElement("span");
+                        flecha.textContent = "\u2192"; flecha.style.flexShrink = "0";
+                        const sel = document.createElement("select");
+                        sel.style.cssText = "flex:2;font-size:12px;min-width:0;";
+                        const optVacia = document.createElement("option");
+                        optVacia.value = ""; optVacia.textContent = "\u2014 omitir este alumno \u2014";
+                        sel.appendChild(optVacia);
+                        nombresEnSeneca.forEach(ns => {
+                            const opt = document.createElement("option");
+                            opt.value = ns; opt.textContent = ns;
+                            if (mapaManualNombres[nombre] === ns) opt.selected = true;
+                            sel.appendChild(opt);
+                        });
+                        sel.addEventListener("change", () => {
+                            if (sel.value) mapaManualNombres[nombre] = sel.value;
+                            else delete mapaManualNombres[nombre];
+                            actualizaMapeoNombres(filas);
+                        });
+                        fila.appendChild(etiq); fila.appendChild(flecha); fila.appendChild(sel);
+                        panelMapeo.appendChild(fila);
+                    }
+                    noCoinciden.forEach(n => creaFilaMapeo(n, "#c0392b"));
+                    yaAsignados.forEach(n => creaFilaMapeo(n, "#e67e22"));
+                }
+
+                function actualizaVistaPrev() {
+                    const texto = entrada.value.trim();
+                    previsualizacion.innerHTML = "";
+                    if (!texto) return;
+                    const filas = texto.split("\n").filter(f => f.trim() !== "");
+                    const maxCols = Math.max(...filas.map(f => f.split(/\t|;/).length));
+                    const tabla = document.createElement("table");
+                    tabla.style.borderCollapse = "collapse";
+                    tabla.style.width = "100%";
+                    tabla.style.fontSize = "13px";
+                    // Cabecera
+                    const thead = document.createElement("thead");
+                    const trHead = document.createElement("tr");
+                    for (let c = 0; c < maxCols; c++) {
+                        const th = document.createElement("th");
+                        th.textContent = c === 0 ? "Nombre" : "C" + c;
+                        th.style.background = "#2471a3";
+                        th.style.color = "white";
+                        th.style.padding = "5px 10px";
+                        th.style.textAlign = c === 0 ? "left" : "center";
+                        th.style.whiteSpace = "nowrap";
+                        trHead.appendChild(th);
+                    }
+                    thead.appendChild(trHead);
+                    tabla.appendChild(thead);
+                    // Filas de datos
+                    const tbody = document.createElement("tbody");
+                    filas.forEach((fila, idx) => {
+                        const celdas = fila.split(/\t|;/);
+                        const tr = document.createElement("tr");
+                        tr.style.background = idx % 2 === 0 ? "#ffffff" : "#eaf4fb";
+                        for (let c = 0; c < maxCols; c++) {
+                            const td = document.createElement("td");
+                            td.textContent = (celdas[c] || "").trim();
+                            td.style.border = "1px solid #d5d8dc";
+                            td.style.padding = "4px 10px";
+                            td.style.textAlign = c === 0 ? "left" : "center";
+                            tr.appendChild(td);
+                        }
+                        tbody.appendChild(tr);
+                    });
+                    tabla.appendChild(tbody);
+                    previsualizacion.appendChild(tabla);
+                    actualizaMapeoNombres(filas);
+                }
+                entrada.addEventListener("input", actualizaVistaPrev);
+                entrada.addEventListener("paste", () => setTimeout(actualizaVistaPrev, 0));
+
+                // --- Separador ---
+                const separador = document.createElement("hr");
+                separador.style.margin = "12px 0";
+                separador.style.border = "none";
+                separador.style.borderTop = "1px solid #ddd";
+                ventana.appendChild(separador);
+
+                // --- Checkbox mínimo 1 (ESO) ---
+                const labelMinimo = document.createElement("label");
+                labelMinimo.style.display = "block";
+                labelMinimo.style.marginBottom = "10px";
+                labelMinimo.style.cursor = "pointer";
+                labelMinimo.style.fontSize = "13px";
+                const checkMinimo = document.createElement("input");
+                checkMinimo.type = "checkbox";
+                checkMinimo.style.marginRight = "6px";
+                labelMinimo.appendChild(checkMinimo);
+                labelMinimo.appendChild(document.createTextNode("Mínimo 1 (ESO) — sube a 1 las notas inferiores"));
+                ventana.appendChild(labelMinimo);
+
+                // --- Fila botones principales ---
+                const filaBotones = document.createElement("div");
+                filaBotones.style.display = "flex";
+                filaBotones.style.gap = "8px";
+                filaBotones.style.flexWrap = "wrap";
 
                 // --- Botón rellenar ---
                 const botonRellenar = document.createElement("button");
                 botonRellenar.textContent = "Rellenar";
-                botonRellenar.style.marginTop = "10px";
-                botonRellenar.style.padding = "10px";
+                botonRellenar.style.padding = "8px 18px";
                 botonRellenar.style.cursor = "pointer";
-                ventana.appendChild(botonRellenar);
+                botonRellenar.style.background = "#2471a3";
+                botonRellenar.style.color = "white";
+                botonRellenar.style.border = "none";
+                botonRellenar.style.borderRadius = "5px";
+                botonRellenar.style.fontWeight = "bold";
+                filaBotones.appendChild(botonRellenar);
 
                 // --- Botón cerrar ---
                 const botonCerrar = document.createElement("button");
                 botonCerrar.textContent = "Cerrar";
-                botonCerrar.style.marginTop = "10px";
-                botonCerrar.style.marginLeft = "10px";
-                botonCerrar.style.padding = "10px";
+                botonCerrar.style.padding = "8px 18px";
                 botonCerrar.style.cursor = "pointer";
-                ventana.appendChild(botonCerrar);
+                botonCerrar.style.background = "#eee";
+                botonCerrar.style.border = "1px solid #bbb";
+                botonCerrar.style.borderRadius = "5px";
+                filaBotones.appendChild(botonCerrar);
+
+                ventana.appendChild(filaBotones);
+
+                // --- Separador borrar ---
+                const sepBorrar = document.createElement("hr");
+                sepBorrar.style.margin = "10px 0 8px";
+                sepBorrar.style.border = "none";
+                sepBorrar.style.borderTop = "1px solid #ddd";
+                ventana.appendChild(sepBorrar);
+
+                // --- Fila botones borrar ---
+                const filaBorrar = document.createElement("div");
+                filaBorrar.style.display = "flex";
+                filaBorrar.style.gap = "8px";
+                filaBorrar.style.flexWrap = "wrap";
+
+                const botonBorrarActual = document.createElement("button");
+                botonBorrarActual.textContent = "Borrar este alumno";
+                botonBorrarActual.style.padding = "7px 14px";
+                botonBorrarActual.style.cursor = "pointer";
+                botonBorrarActual.style.background = "#e8e8e8";
+                botonBorrarActual.style.border = "1px solid #bbb";
+                botonBorrarActual.style.borderRadius = "5px";
+                botonBorrarActual.style.fontSize = "12px";
+                filaBorrar.appendChild(botonBorrarActual);
+
+                const botonBorrarSiguientes = document.createElement("button");
+                botonBorrarSiguientes.textContent = "Borrar este y siguientes";
+                botonBorrarSiguientes.style.padding = "7px 14px";
+                botonBorrarSiguientes.style.cursor = "pointer";
+                botonBorrarSiguientes.style.background = "#fdecea";
+                botonBorrarSiguientes.style.border = "1px solid #e57373";
+                botonBorrarSiguientes.style.borderRadius = "5px";
+                botonBorrarSiguientes.style.color = "#c0392b";
+                botonBorrarSiguientes.style.fontSize = "12px";
+                filaBorrar.appendChild(botonBorrarSiguientes);
+
+                ventana.appendChild(filaBorrar);
 
                 // --- Insertar en DOM ---
                 fondo.appendChild(ventana);
@@ -246,31 +457,31 @@ function InicializarEventos() {
                                 function EscribeLasNotas(){
                                     //console.log("EscribeLasNotas");
                                     if (VG.primerAlumno== "") {VG.primerAlumno = textoNombreAlumnoActual;}
+                                    function aplicaMinimo(valor) {
+                                        const normalizado = valor.replace(",", ".");
+                                        if (!checkMinimo.checked) return normalizado;
+                                        const num = parseFloat(normalizado);
+                                        return (!isNaN(num) && num < 1) ? "1" : normalizado;
+                                    }
                                     for (let i = 0; i < arrayImportacion.length; i++) {
                                         const nombreAlumnoImportacion = arrayImportacion[i][0].trim();
                                         // Todas las columnas a partir de la 1\u00aa son notas (puede haber 1 o varias)
                                         const notasAlumnoImportacion = arrayImportacion[i].slice(1).map(n => n.trim());
-                                        function normalizaTexto(texto) {
-                                            return texto
-                                                .normalize("NFD")                 // separa letra + acento
-                                                .replace(/[\u0300-\u036f]/g, "") // elimina los acentos
-                                                .toLowerCase()
-                                                .trim();
-                                            }
-                                        if (normalizaTexto(textoNombreAlumnoActual) === normalizaTexto(nombreAlumnoImportacion)) {
+                                        const nombreParaComparar = mapaManualNombres[nombreAlumnoImportacion] || nombreAlumnoImportacion;
+                                        if (normalizaTexto(textoNombreAlumnoActual) === normalizaTexto(nombreParaComparar)) {
                                             const inputNota = document.querySelectorAll("input[id^='X_CRIEVACOMBAS_']");
                                             // Si los inputs aún no están en el DOM, devuelve false para reintentar
                                             if (inputNota.length === 0) return false;
                                             contadorAlumnosProcesados++;
                                             if (notasAlumnoImportacion.length === 1) {
                                                 // Una sola nota: la copia a todos los criterios
-                                                inputNota[0].value = notasAlumnoImportacion[0];
+                                                inputNota[0].value = aplicaMinimo(notasAlumnoImportacion[0]);
                                                 ClonaPrimeraNota(inputNota);
                                             } else {
                                                 // Varias notas: cada una va a su criterio en orden
                                                 for (let j = 0; j < notasAlumnoImportacion.length && j < inputNota.length; j++) {
                                                     if (notasAlumnoImportacion[j] !== "") {
-                                                        inputNota[j].value = notasAlumnoImportacion[j];
+                                                        inputNota[j].value = aplicaMinimo(notasAlumnoImportacion[j]);
                                                     }
                                                 }
                                             }
@@ -287,6 +498,63 @@ function InicializarEventos() {
 
                 botonCerrar.addEventListener("click", () => {
                     fondo.remove();
+                });
+
+                botonBorrarActual.addEventListener("click", () => {
+                    const inputs = document.querySelectorAll("input[id^='X_CRIEVACOMBAS_']");
+                    inputs.forEach(input => { input.value = ""; });
+                    // Guardar: navegar siguiente y volver
+                    setTimeout(() => {
+                        const btnSig = document.querySelector("button.btnAlumnoSiguiente");
+                        if (!btnSig) return;
+                        btnSig.click();
+                        setTimeout(() => {
+                            const btnAnt = document.querySelector("button.btnAlumnoAnterior");
+                            if (btnAnt) btnAnt.click();
+                        }, 1500);
+                    }, 400);
+                });
+
+                botonBorrarSiguientes.addEventListener("click", () => {
+                    let primerAlumnoBorrado = "";
+                    let nombreEnBucle = "";
+                    let haAbandonadoPrimero = false;
+                    let esperandoCambio = false;
+                    let noActuarHasta = 0;
+                    fondo.remove();
+                    const bucle = setInterval(() => {
+                        if (Date.now() < noActuarHasta) return;
+                        const el = document.querySelector("#select2-selecbuscadoralumnado-container");
+                        if (!el) return;
+                        const nombreVisto = el.textContent;
+                        if (!nombreVisto) return;
+                        if (nombreEnBucle === "") nombreEnBucle = nombreVisto;
+                        if (nombreVisto === nombreEnBucle) {
+                            // mismo alumno
+                            if (haAbandonadoPrimero && nombreVisto === primerAlumnoBorrado) {
+                                clearInterval(bucle);
+                                return;
+                            }
+                            if (esperandoCambio) return;
+                            const inputs = document.querySelectorAll("input[id^='X_CRIEVACOMBAS_']");
+                            if (inputs.length === 0) return;
+                            if (primerAlumnoBorrado === "") primerAlumnoBorrado = nombreVisto;
+                            inputs.forEach(input => { input.value = ""; });
+                            esperandoCambio = true;
+                            setTimeout(() => {
+                                const btn = document.querySelector("button[class='btn btn-sm btn-primary m-0 ml-1 btnAlumnoSiguiente']");
+                                if (btn) {
+                                    btn.click();
+                                    noActuarHasta = Date.now() + 1500;
+                                }
+                            }, 900);
+                        } else {
+                            // alumno ha cambiado: actualizar y esperar siguiente tick
+                            nombreEnBucle = nombreVisto;
+                            esperandoCambio = false;
+                            if (primerAlumnoBorrado !== "") haAbandonadoPrimero = true;
+                        }
+                    }, 500);
                 });
 
             })();
@@ -815,10 +1083,10 @@ function InicializarEventos() {
                         }
                         if (data.checkboxPRAState === undefined) {
                             chrome.storage.local.set({ checkboxPRAState: true });
-                            VG.UsarAsistentePRA = true;
+                            VG.UsarAsistentePRA = false;
                             return;
                         } else {
-                            VG.UsarAsistentePRA = data.checkboxPRAState;
+                            VG.UsarAsistentePRA = false;
                         }
                         //console.log(VG.entrarEnVentanaPrincipalPRA);
                         celdasNoOcultadas = DetectaCeldasNoOcultadasPRA();
@@ -1379,7 +1647,6 @@ document.addEventListener("DOMContentLoaded", function () {
    
         }
     //VG.entrarEnContenidoPRA = true;
-    MuestraMensajeInicial();
     InicializarEventos();
     observarCambiosEnDOM();
 
@@ -1392,88 +1659,3 @@ window.addEventListener("load", function () {
     // Puedes realizar operaciones seguras sobre imágenes, estilos, y más.
 });
 // Mostrar ventana emergente "Hola" solo una vez al día
-function MuestraMensajeInicial() {
-    const hoy = new Date().toDateString(); // p.ej. "Mon Sep 29 2025"
-    chrome.storage.local.get({ultimoSaludo: null, vecesSaludo2: 0}, (data) => {
-        
-        //console.log(`El saludo se ha mostrado ${vecesSaludo} veces.`);
-        vecesSaludo2 = data.vecesSaludo2;
-        if (((data.ultimoSaludo !== hoy ) && vecesSaludo2<3)) {
-            vecesSaludo2 = data.vecesSaludo2 || 0;
-            vecesSaludo2++;
-            chrome.storage.local.set({ vecesSaludo2: vecesSaludo2 });
-            // Crear fondo
-            const fondo = document.createElement("div");
-            fondo.style.position = "fixed";
-            fondo.style.top = "0";
-            fondo.style.left = "0";
-            fondo.style.width = "100%";
-            fondo.style.height = "100%";
-            fondo.style.backgroundColor = "rgba(0,0,0,0.3)";
-            fondo.style.zIndex = "9999";
-
-            // Crear ventana
-            const ventana = document.createElement("div");
-            ventana.style.position = "fixed";
-            ventana.style.top = "50%";
-            ventana.style.left = "50%";
-            ventana.style.transform = "translate(-50%, -50%)";
-            ventana.style.background = "#2E8A41";
-            ventana.style.color = "white";
-            ventana.style.padding = "20px";
-            ventana.style.borderRadius = "10px";
-            ventana.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-            ventana.style.textAlign = "center";
-
-            const titulo = document.createElement("h3");
-            titulo.innerText = "Novedad en Séneca Fácil";
-            titulo.style.marginTop = "0";
-            titulo.style.marginBottom = "10px";
-            ventana.appendChild(titulo);
-            // Texto principal
-            const mensaje = document.createElement("p");
-            mensaje.style.color = "white";
-            mensaje.innerText = "Ahora puedes pegar directamente las notas copiadas desde un Excel o Google Sheets en el campo de nota de Séneca. ¡Más fácil imposible!";
-            ventana.appendChild(mensaje);
-
-            // Enlace
-            const enlace = document.createElement("a");
-            enlace.style.color = "#C8E6C9"; // verde claro
-            enlace.style.fontWeight = "bold";
-            enlace.style.textDecoration = "underline";
-
-            enlace.href = "https://iaeducacionsecundaria.blogspot.com/2025/12/seneca-facil-ahora-permite-pegar-datos.html";
-            enlace.innerText = "Más información aquí";
-            enlace.target = "_blank"; // abre en nueva pestaña
-
-            
-
-            enlace.style.display = "block";
-            enlace.style.marginTop = "10px";
-            
-            ventana.appendChild(enlace);
-
-            // Botón cerrar
-            const boton = document.createElement("button");
-            boton.innerText = "Cerrar";
-            boton.style.marginTop = "15px";
-            boton.onclick = () => fondo.remove();
-
-            boton.style.backgroundColor = "white";
-            boton.style.color = "#2E8A41";
-            boton.style.border = "none";
-            boton.style.borderRadius = "6px";
-            boton.style.padding = "8px 16px";
-            boton.style.cursor = "pointer";
-
-            ventana.appendChild(boton);
-
-            // Añadir al DOM
-            fondo.appendChild(ventana);
-            document.body.appendChild(fondo);
-
-            // Guardar la fecha
-            chrome.storage.local.set({ ultimoSaludo: hoy });
-        }
-    });
-};

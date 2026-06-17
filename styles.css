@@ -1,34 +1,107 @@
-#title-container{
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-width: 220px;
+    background: linear-gradient(160deg, #1a3a5c 0%, #2471a3 100%);
+    padding-bottom: 20px;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+#title-container {
     text-align: center;
+    padding: 16px 12px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 8px;
 }
 
-#title-container img{
-    width: 10%;
+#title-container img {
+    width: 36px;
+    opacity: 0.9;
 }
 
-#title-container h1{
-    margin-top: 0px;
+#title-container h1 {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    color: white;
 }
 
-body{
-    min-width: 200px;
-    background: linear-gradient(0deg, rgb(31, 245, 123) 0%, rgb(227, 245, 228) 100%);
-    padding-bottom: 40px;
+#subtitle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 2px;
 }
 
-#checkboxOcultaRubricasContenedor{
-    font-size: 15px;
+.seccion-titulo {
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    padding: 10px 14px 4px;
 }
 
-#checkboxOcultaCriteriosContenedor{
-    font-size: 15px;
+.opcion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 1px 8px;
+    transition: background 0.15s;
 }
 
-#checkboxClonarContenedor{
-    font-size: 15px;
+.opcion:hover {
+    background: rgba(255,255,255,0.12);
 }
 
-#checkboxPasaAlumnoContenedor{
-    font-size: 15px;
+.opcion input[type="checkbox"] {
+    accent-color: #7ec8f5;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
 }
-  
+
+.opcion label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.opcion-boton {
+    padding: 4px 8px;
+    margin: 1px 8px;
+}
+
+.opcion-boton button {
+    width: 100%;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    text-align: left;
+    transition: background 0.15s;
+}
+
+.opcion-boton button:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+#btnBorrarTodos {
+    background: rgba(220, 50, 50, 0.4);
+}
+
+#btnBorrarTodos:hover {
+    background: rgba(220, 50, 50, 0.6);
+}

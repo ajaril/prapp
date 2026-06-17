@@ -140,7 +140,7 @@ if (pasaAlumnoEnStorage==undefined){
 document.addEventListener('DOMContentLoaded', () => {
     const checkboxPRA = document.getElementById('checkboxPRA');
     const botonMenuSeleccion = document.getElementById('botonMenuSeleccion');
-  
+
     chrome.storage.local.get(['checkboxPRAState'], (result) => {
         if (result.checkboxPRAState === undefined) {
             chrome.storage.local.set({ checkboxPRAState: true });

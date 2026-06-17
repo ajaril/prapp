@@ -2,40 +2,45 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="styles.css">
-
     </head>
     <body>
         <div id="title-container">
-            <img src="logo.png" alt="">
-            <h1>Séneca Fácil</h1>
+            <img src="logocalifica.png" alt="">
+            <h1>Criteriapp</h1>
+            <p id="subtitle">Gestión de calificaciones</p>
         </div>
 
-        <div id="checkboxOcultaRubricasContenedor">
+        <div class="seccion-titulo">Visualización</div>
+
+        <div class="opcion">
             <input type="checkbox" id="checkboxOcultaRubricas" value="true" checked>
-            <label for="checkboxOcultaRubricas">Oculta rúbricas</label>
+            <label for="checkboxOcultaRubricas">Ocultar rúbricas</label>
         </div>
-        <div id="checkboxOcultaCriteriosContenedor">
+        <div class="opcion">
             <input type="checkbox" id="checkboxOcultaCriterios" value="true" checked>
-            <label for="checkboxOcultaCriterios">Oculta criterios</label>
+            <label for="checkboxOcultaCriterios">Ocultar criterios</label>
         </div>
-        <div id="checkboxClonarContenedor">
+
+        <div class="seccion-titulo">Comportamiento</div>
+
+        <div class="opcion">
             <input type="checkbox" id="checkboxClonar" value="true" checked>
-            <label for="checkboxClonar">Clona notas criteriales</label>
+            <label for="checkboxClonar">Clonar notas criteriales</label>
         </div>
-        <div id="checkboxPasaAlumnoContenedor">
+        <div class="opcion">
             <input type="checkbox" id="checkboxPasa" value="true" checked>
-            <label for="checkboxPasa">Pasa a alumno siguiente</label>
+            <label for="checkboxPasa">Pasar al alumno siguiente</label>
         </div>
-        <div id="checkboxPRAContenedor">
-            <hr>
-              <input type="checkbox" id="checkboxPRA" checked> 
-              <label for="checkboxPRA">Activa asistente PRA</label>
-            </label>
-          </div>
-          <div >
+
+        <!-- PRA y menú ocultos hasta reimplementación -->
+        <div id="checkboxPRAContenedor" style="display:none">
+            <input type="checkbox" id="checkboxPRA" checked>
+            <label for="checkboxPRA">Activa asistente PRA</label>
+        </div>
+        <div style="display:none">
             <button id="botonMenuSeleccion">Menu de selección</button>
-          </div>
-          <script src="popup.js"></script>
-        <script type="text/javascript" src="popup.js"></script>
+        </div>
+
+        <script src="popup.js"></script>
     </body>
 </html>

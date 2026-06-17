@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criteriapp — Manual de uso</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 24px 60px;
+      color: #222;
+      line-height: 1.6;
+    }
+    h1 { color: #1a3a5c; border-bottom: 3px solid #1a3a5c; padding-bottom: 8px; }
+    h2 { color: #1a3a5c; margin-top: 40px; border-bottom: 1px solid #aed6f1; padding-bottom: 4px; }
+    h3 { color: #2471a3; margin-top: 28px; }
+    .aviso {
+      background: #fef9e7;
+      border-left: 4px solid #f39c12;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .aviso strong { color: #b7770d; }
+    .error {
+      background: #fdedec;
+      border-left: 4px solid #e74c3c;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .error strong { color: #c0392b; }
+    .ok {
+      background: #eafaf1;
+      border-left: 4px solid #27ae60;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .ok strong { color: #1e8449; }
+    ol li, ul li { margin-bottom: 6px; }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.95em;
+      font-family: Consolas, monospace;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 12px 0;
+    }
+    th {
+      background: #1a3a5c;
+      color: white;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    td {
+      border: 1px solid #d5d8dc;
+      padding: 8px 12px;
+    }
+    tr:nth-child(even) td { background: #f8f9fa; }
+    .paso {
+      background: #eaf4fb;
+      border: 1px solid #aed6f1;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+    }
+    .paso .num {
+      display: inline-block;
+      background: #1a3a5c;
+      color: white;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      text-align: center;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    footer {
+      margin-top: 60px;
+      border-top: 1px solid #ddd;
+      padding-top: 16px;
+      font-size: 0.85em;
+      color: #666;
+    }
+    footer strong { color: #1a3a5c; }
+  </style>
+</head>
+<body>
+
+<h1>Criteriapp &mdash; Manual de uso</h1>
+<p>Extensión para Google Chrome que automatiza la introducción de notas en el cuaderno de calificaciones de Séneca (Junta de Andalucía).</p>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>1. Instalación en Google Chrome (modo desarrollador)</h2>
+
+<div class="aviso">
+  <strong>Nota:</strong> Criteriapp no está publicada en la Chrome Web Store, por lo que hay que instalarla manualmente como extensión de desarrollador. El proceso es sencillo y solo se hace una vez.
+</div>
+
+<div class="paso"><span class="num">1</span> Descarga la carpeta de la extensión en tu ordenador y descomprímela si viene en un archivo ZIP. Recuerda dónde la guardas.</div>
+
+<div class="paso"><span class="num">2</span> Abre Google Chrome y escribe en la barra de direcciones: <code>chrome://extensions</code> y pulsa Intro.</div>
+
+<div class="paso"><span class="num">3</span> En la esquina superior derecha de esa página, activa el interruptor <strong>"Modo de desarrollador"</strong>.</div>
+
+<div class="paso"><span class="num">4</span> Haz clic en el botón <strong>"Cargar descomprimida"</strong> que aparecerá a la izquierda.</div>
+
+<div class="paso"><span class="num">5</span> En el explorador de archivos que se abre, selecciona la <strong>carpeta</strong> de la extensión (la que contiene los ficheros <code>manifest.json</code>, <code>content.js</code>, etc.) y haz clic en <strong>"Seleccionar carpeta"</strong>.</div>
+
+<div class="paso"><span class="num">6</span> La extensión aparecerá en la lista con el nombre <strong>Criteriapp</strong>. Su icono también aparecerá en la barra de herramientas de Chrome (puede que tengas que fijarlo haciendo clic en el icono del puzzle &#9883;).</div>
+
+<div class="ok">
+  <strong>Ya está instalada.</strong> No hace falta reiniciar Chrome. La extensión se activa automáticamente cada vez que entras en Séneca.
+</div>
+
+<h3>Cómo actualizar la extensión</h3>
+<p>Si recibes una versión nueva, sustituye los ficheros de la carpeta por los nuevos y, en <code>chrome://extensions</code>, haz clic en el icono de recarga &#8635; que aparece bajo el nombre de la extensión.</p>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>2. Opciones del popup</h2>
+
+<p>Haz clic en el icono de Criteriapp en la barra de Chrome para ver el menú de opciones:</p>
+
+<table>
+  <tr><th>Opción</th><th>Qué hace</th></tr>
+  <tr><td>Ocultar rúbricas</td><td>Oculta las columnas de rúbrica en el cuaderno para que ocupe menos espacio</td></tr>
+  <tr><td>Ocultar criterios</td><td>Oculta los criterios de calificación y muestra etiquetas abreviadas</td></tr>
+  <tr><td>Clonar notas criteriales</td><td>Al escribir la primera nota, la copia automáticamente a todos los criterios del mismo alumno</td></tr>
+  <tr><td>Pasar al alumno siguiente</td><td>Al cambiar la nota en más de 1 punto, avanza solo al alumno siguiente</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>3. Ventana de importación de notas</h2>
+
+<p>Al abrir el cuaderno de calificaciones en Séneca, Criteriapp muestra automáticamente una ventana de importación. Si la cierras por error, recarga la página para que vuelva a aparecer.</p>
+
+<h3>3.1 Formato de los datos en la hoja de cálculo</h3>
+
+<div class="aviso">
+  <strong>Orden recomendado del nombre:</strong> lo ideal es que el nombre esté en el mismo formato que en Séneca: primero los <strong>apellidos</strong>, luego una <strong>coma</strong>, luego el <strong>nombre</strong> (<code>García López, Antonio</code>). Así la coincidencia es automática.<br><br>
+  Si el formato es diferente o el nombre no coincide exactamente, <strong>no es un problema</strong>: el panel de mapeo de nombres (§3.3) te permitirá asignarlo manualmente antes de importar.
+</div>
+
+<div class="aviso">
+  <strong>Tildes, mayúsculas y espacios:</strong> Criteriapp ignora tildes, mayúsculas/minúsculas y espacios extra alrededor de la coma. <code>garcia lopez, antonio</code> y <code>García López, Antonio</code> se consideran iguales.
+</div>
+
+<p>Cada fila de tu hoja de cálculo debe tener este formato:</p>
+
+<table>
+  <tr><th>Columna 1</th><th>Columna 2</th><th>Columna 3</th><th>Columna 4…</th></tr>
+  <tr><td>Apellidos, Nombre</td><td>Nota criterio 1</td><td>Nota criterio 2</td><td>Nota criterio 3…</td></tr>
+  <tr><td><code>García López, Antonio</code></td><td><code>7</code></td><td><code>8</code></td><td><code>6</code></td></tr>
+  <tr><td><code>Martínez Ruiz, Laura</code></td><td><code>9</code></td><td><code>7</code></td><td><code>9</code></td></tr>
+</table>
+
+<div class="error">
+  <strong>Importante &mdash; Número de columnas de nota:</strong> el número de columnas de nota debe coincidir con el número de criterios del cuaderno en Séneca para esa asignatura.<br><br>
+  <strong>Excepción:</strong> si pegas <strong>una sola columna de nota</strong>, se copia automáticamente a todos los criterios.
+</div>
+
+<h3>3.2 Vista previa en cuadrícula</h3>
+
+<p>Al pegar los datos, Criteriapp los muestra automáticamente en una tabla con encabezados (<strong>Nombre</strong>, <strong>C1</strong>, <strong>C2</strong>…) para verificar que el formato es correcto antes de importar.</p>
+
+<h3>3.3 Mapeo manual de nombres</h3>
+
+<p>Debajo de la tabla de vista previa aparece un panel que compara los nombres de tu hoja de cálculo con los alumnos registrados en Séneca:</p>
+
+<ul>
+  <li><strong style="color:#27ae60">✓ Todos los nombres coinciden automáticamente</strong> — no hay que hacer nada.</li>
+  <li><strong style="color:#c0392b">Nombre en rojo ⚠</strong> — no se encontró en Séneca. Aparece un desplegable para seleccionar manualmente el alumno correcto.</li>
+  <li>Una vez asignado, el nombre pasa a <strong style="color:#e67e22">naranja</strong> (asignado manualmente) y sigue siendo editable.</li>
+</ul>
+
+<div class="aviso">
+  <strong>Los alumnos sin asignar se omiten</strong> durante la importación. Si dejas el desplegable en "— omitir este alumno —", ese alumno no recibirá ninguna nota.
+</div>
+
+<h3>3.4 Opción "Mínimo 1 (ESO)"</h3>
+
+<p>Séneca no permite notas menores que 1 en los cursos de la ESO. Si algún alumno tiene una nota inferior a 1 en tu hoja de cálculo, marca la casilla <strong>"Mínimo 1 (ESO) — sube a 1 las notas inferiores"</strong> antes de pulsar "Rellenar". Para Bachillerato deja la casilla <strong>desmarcada</strong>.</p>
+
+<h3>3.5 Iniciar la importación</h3>
+
+<div class="paso"><span class="num">1</span> Con los datos pegados y el mapeo de nombres verificado, pulsa <strong>"Rellenar"</strong>.</div>
+<div class="paso"><span class="num">2</span> La ventana se cierra y Criteriapp rellena las notas automáticamente, alumno por alumno.</div>
+<div class="paso"><span class="num">3</span> <strong>No toques el ratón ni el teclado</strong> mientras el proceso está en marcha. Tarda aproximadamente 3-4 segundos por alumno.</div>
+<div class="paso"><span class="num">4</span> El proceso termina solo cuando ha recorrido todos los alumnos de la lista.</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>4. Borrar notas</h2>
+
+<p>En la parte inferior de la ventana de importación hay dos botones para borrar notas:</p>
+
+<table>
+  <tr><th>Botón</th><th>Qué hace</th></tr>
+  <tr>
+    <td><strong>Borrar este alumno</strong></td>
+    <td>Borra inmediatamente las notas del alumno que está en pantalla. Acción instantánea.</td>
+  </tr>
+  <tr>
+    <td><strong>Borrar este y siguientes</strong></td>
+    <td>Borra las notas del alumno actual y avanza automáticamente por todos los alumnos siguientes borrándolas, hasta completar el círculo. Cierra la ventana y funciona en segundo plano (~3-4 s por alumno).</td>
+  </tr>
+</table>
+
+<div class="aviso">
+  <strong>Precaución:</strong> el borrado escribe campos vacíos en Séneca. Asegúrate de que es lo que quieres antes de usar "Borrar este y siguientes".
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>5. Resumen de errores frecuentes</h2>
+
+<table>
+  <tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr>
+  <tr>
+    <td>Un alumno no recibe la nota</td>
+    <td>El nombre en la hoja de cálculo no coincide con el de Séneca</td>
+    <td>Usar el mapeo manual de nombres en la ventana de importación</td>
+  </tr>
+  <tr>
+    <td>Todos los criterios tienen la misma nota</td>
+    <td>Solo se pegó una columna de nota</td>
+    <td>Pegar tantas columnas como criterios, o usar la clonación intencionadamente</td>
+  </tr>
+  <tr>
+    <td>Séneca rechaza la nota (menor que 1)</td>
+    <td>Estás en ESO y hay notas por debajo de 1</td>
+    <td>Marcar "Mínimo 1 (ESO)" antes de rellenar</td>
+  </tr>
+  <tr>
+    <td>El proceso se para a mitad</td>
+    <td>Se movió el ratón o se pulsó una tecla durante la importación</td>
+    <td>Recargar la página y volver a empezar desde donde se paró</td>
+  </tr>
+  <tr>
+    <td>No aparece la ventana de importación</td>
+    <td>La ventana ya se mostró antes en esta sesión</td>
+    <td>Recargar la página del cuaderno</td>
+  </tr>
+  <tr>
+    <td>El panel de mapeo no muestra alumnos en el desplegable</td>
+    <td>El cuaderno aún no ha cargado la lista de alumnos</td>
+    <td>Esperar a que cargue la página y pegar los datos de nuevo</td>
+  </tr>
+</table>
+
+<footer>
+  <strong>Criteriapp</strong> &mdash; Extensión para Google Chrome &mdash; IES Poeta García Gutiérrez<br>
+  Autor: <strong>Antonio Jarillo Marmolejo</strong> &mdash; <a href="mailto:jarillo@iespoeta.com">jarillo@iespoeta.com</a>
+</footer>
+
+</body>
+</html>

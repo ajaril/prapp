@@ -1,8 +1,11 @@
 {
    "action": {
-      "default_icon": "logo.png",
+      "default_icon": "logocalifica.png",
       "default_popup": "popup.html",
-      "default_title": "Séneca Fácil"
+      "default_title": "Criteriapp"
+   },
+   "icons": {
+      "128": "logocalifica.png"
    },
    "background": {
       "service_worker": "background.js"
@@ -22,11 +25,9 @@
       "matches": [ "https://seneca.juntadeandalucia.es/seneca/*" ],
       "run_at": "document_start"
    } ],
-   "description": "Cuaderno de Seneca y PRA",
-   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzfzlpmvI/0VKW4tvdp3PuidqfhgMdvzEYZw9tm9YCFkMS7tXdBRpwgaj0x/GhAW96Qoh/+SO51XmL8awr+XVonEsKvS4sc0mN112sjdRzF2reU6cx8RkXMNhFkg+lhZd4LSwNPBagF3QzCWTdlE4DYlt8h5hJwoMz52uZ2yYbbLKqEyMMsz5g9In6RsYjx9gX91M6gJLUmVyr3J0P7O+r3UQymuJtu8gHQsOANY2BW6hKyT2y86yJsDPYWdkyWdA3XOBaXQ4ohCiAeX72GhYtQVUTxuMvSRTN28fGPzQ4rSbHp47l+DOPm/4J1kmSfrfBTudN6gxblaDMoXUs6tsCwIDAQAB",
+   "description": "Criteriapp — gestión de calificaciones para Séneca",
    "manifest_version": 3,
-   "name": "Séneca Fácil",
+   "name": "Criteriapp",
    "permissions": [ "storage" ],
-   "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "0.0.7.0"
+   "version": "0.1.0"
 }
