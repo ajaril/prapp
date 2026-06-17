@@ -2,7 +2,7 @@
    "action": {
       "default_icon": "logocalifica.png",
       "default_popup": "popup.html",
-      "default_title": "Criteriapp"
+      "default_title": "PRApp"
    },
    "icons": {
       "128": "logocalifica.png"
@@ -25,9 +25,9 @@
       "matches": [ "https://seneca.juntadeandalucia.es/seneca/*" ],
       "run_at": "document_start"
    } ],
-   "description": "Criteriapp — gestión de calificaciones para Séneca",
+   "description": "PRApp — asistente para el Plan de Refuerzo y Apoyo en Séneca",
    "manifest_version": 3,
-   "name": "Criteriapp",
+   "name": "PRApp",
    "permissions": [ "storage" ],
    "version": "0.1.0"
 }

@@ -6,7 +6,7 @@ function VariablesGlobales() {
     let saltaVentanaApartados = true;
     let primerPase = true;
     let enMenuNecesario= true;
-    let UsarAsistentePRA = false;
+    let UsarAsistentePRA = true;
     let forzarMenuSeleccion = false;
     let limpiarMenuSeleccion = false;
     let refrescar = false;
@@ -147,7 +147,7 @@ function InicializarEventos() {
 
                 // --- Título ---
                 const titulo = document.createElement("h3");
-                titulo.textContent = "Criteriapp — Importar notas";
+                titulo.textContent = "PRApp — Importar notas";
                 titulo.style.marginTop = "0";
                 titulo.style.marginBottom = "12px";
                 titulo.style.color = "#1a5276";
@@ -1083,10 +1083,10 @@ function InicializarEventos() {
                         }
                         if (data.checkboxPRAState === undefined) {
                             chrome.storage.local.set({ checkboxPRAState: true });
-                            VG.UsarAsistentePRA = false;
+                            VG.UsarAsistentePRA = true;
                             return;
                         } else {
-                            VG.UsarAsistentePRA = false;
+                            VG.UsarAsistentePRA = data.checkboxPRAState;
                         }
                         //console.log(VG.entrarEnVentanaPrincipalPRA);
                         celdasNoOcultadas = DetectaCeldasNoOcultadasPRA();
