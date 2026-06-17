@@ -101,6 +101,7 @@ function InicializarEventos() {
                     return;
                 }
            (function MuestraCuadroDeImportación() {
+                return; // PRApp: ventana de notas deshabilitada
 
                 // --- Utilidades compartidas ---
                 function normalizaTexto(texto) {

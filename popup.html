@@ -7,32 +7,29 @@
         <div id="title-container">
             <img src="logocalifica.png" alt="">
             <h1>PRApp</h1>
-            <p id="subtitle">Gestión de calificaciones</p>
+            <p id="subtitle">Asistente PRA</p>
         </div>
 
-        <div class="seccion-titulo">Visualización</div>
-
-        <div class="opcion">
-            <input type="checkbox" id="checkboxOcultaRubricas" value="true" checked>
-            <label for="checkboxOcultaRubricas">Ocultar rúbricas</label>
+        <div style="display:none">
+            <div class="seccion-titulo">Visualización</div>
+            <div class="opcion">
+                <input type="checkbox" id="checkboxOcultaRubricas" value="true" checked>
+                <label for="checkboxOcultaRubricas">Ocultar rúbricas</label>
+            </div>
+            <div class="opcion">
+                <input type="checkbox" id="checkboxOcultaCriterios" value="true" checked>
+                <label for="checkboxOcultaCriterios">Ocultar criterios</label>
+            </div>
+            <div class="seccion-titulo">Comportamiento</div>
+            <div class="opcion">
+                <input type="checkbox" id="checkboxClonar" value="true" checked>
+                <label for="checkboxClonar">Clonar notas criteriales</label>
+            </div>
+            <div class="opcion">
+                <input type="checkbox" id="checkboxPasa" value="true" checked>
+                <label for="checkboxPasa">Pasar al alumno siguiente</label>
+            </div>
         </div>
-        <div class="opcion">
-            <input type="checkbox" id="checkboxOcultaCriterios" value="true" checked>
-            <label for="checkboxOcultaCriterios">Ocultar criterios</label>
-        </div>
-
-        <div class="seccion-titulo">Comportamiento</div>
-
-        <div class="opcion">
-            <input type="checkbox" id="checkboxClonar" value="true" checked>
-            <label for="checkboxClonar">Clonar notas criteriales</label>
-        </div>
-        <div class="opcion">
-            <input type="checkbox" id="checkboxPasa" value="true" checked>
-            <label for="checkboxPasa">Pasar al alumno siguiente</label>
-        </div>
-
-        <!-- PRA y menú ocultos hasta reimplementación -->
         <div id="checkboxPRAContenedor">
             <input type="checkbox" id="checkboxPRA" checked>
             <label for="checkboxPRA">Activa asistente PRA</label>
