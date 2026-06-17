@@ -1,12 +1,90 @@
-# Changelog — Séneca Fácil
+# Changelog — PRApp
+
+## [0.1.1] — 2026-06-17
+
+### Cambios
+
+#### Notas criteriales ocultas — solo PRA visible
+PRApp es exclusivamente un asistente PRA. Toda la funcionalidad de importación
+de notas criteriales ha sido deshabilitada:
+
+- **popup.html**: secciones "Visualización" (ocultar rúbricas/criterios) y
+  "Comportamiento" (clonar notas, pasar alumno) ocultas con `display:none`.
+  El popup muestra únicamente el checkbox "Activa asistente PRA" y el botón
+  "Menú de selección". Subtítulo actualizado a "Asistente PRA".
+- **content.js**: `MuestraCuadroDeImportación` devuelve inmediatamente al inicio;
+  la ventana de importación de notas nunca aparece aunque se detecte el cuaderno
+  de calificaciones.
+
+---
+
+### Bugs corregidos
+
+#### Bug — Ventana PRA bloqueante con formulario vacío
+**Síntoma:** la ventana "¿Qué deseas hacer?" aparecía al entrar en el formulario
+de texto de un alumno cuyo PRA estaba vacío, bloqueando toda interacción con
+la página.
+
+**Causa:** `VG.formularioConDatos` se establecía a `true` cuando un alumno tenía
+texto en su PRA, pero nunca se reseteaba al navegar al siguiente alumno. El
+siguiente alumno (con formulario vacío) heredaba el `true` del anterior, disparando
+el popup incorrectamente.
+
+**Solución:** añadida línea `VG.formularioConDatos = false;` justo antes de la
+comprobación de contenido del formulario, de modo que se evalúa siempre sobre el
+estado real del alumno actual.
+
+---
+
+#### Rediseño — Ventana de conservar texto PRA
+La ventana emergente "¿Qué deseas hacer?" (que aparece cuando el alumno ya tiene
+texto propio en Séneca y hay también texto guardado del alumno anterior) ha sido
+rediseñada con el estilo visual de PRApp:
+
+- Fondo: gradiente azul oscuro `#1a3a5c → #2471a3`
+- Etiqueta "PRApp" en azul claro sobre el mensaje
+- Dos botones de acción: "Conservar el texto actual" (transparente con borde) y
+  "Usar texto del PRA anterior" (blanco con texto azul)
+
+---
+
+### Comportamiento del auto-relleno (recordatorio)
+| Situación | Qué ocurre |
+|-----------|-----------|
+| Primera vez (storage vacío) | No pasa nada — formulario tal como lo deja Séneca |
+| Alumno con formulario vacío + hay texto guardado | Auto-relleno silencioso con el texto del PRA anterior |
+| Alumno con texto propio + hay texto guardado | Aparece la ventana para elegir entre conservar o sustituir |
+| Alumno pulsa Aceptar | El texto actual se guarda en storage para el siguiente alumno |
+
+---
+
+## [0.1.0] — 2026-06-17
+
+### Origen
+PRApp es una extensión independiente creada a partir de Criteriapp, enfocada
+exclusivamente en el asistente PRA (Plan de Refuerzo y Apoyo) de Séneca.
+
+### Funcionalidades activas
+- **Pantalla principal PRA** ("PROCESO DE ELABORACIÓN"): reorganiza la tabla
+  eliminando `rowSpan` y muestra menú de selección por curso / alumno / asignatura.
+- **Pantalla de apartados** ("APARTADOS A CUMPLIMENTAR"): oculta las filas que
+  no corresponden a la asignatura seleccionada en el filtro.
+- **Pantalla de elementos curriculares** ("ELEMENTOS CURRICULARES A REFORZAR"):
+  activa todos los criterios automáticamente.
+- **Formulario de contenido PRA** ("Elementos curriculares a reforzar"): guarda
+  el texto introducido al pulsar Aceptar y lo ofrece como plantilla para el
+  siguiente alumno.
+
+---
+
+## Historial previo (heredado de Criteriapp / Séneca Fácil)
 
 ## [0.0.8.0] — 2026-05-24
 
 ### Nuevas funcionalidades
 
 #### Importación multicolumna de notas
-La ventana de importación (que ya existía para pegar nombre + 1 nota desde Excel)
-ahora soporta **múltiples columnas de notas**, una por criterio, en orden:
+La ventana de importación ahora soporta **múltiples columnas de notas**, una por criterio, en orden:
 
 ```
 Apellidos, Nombre   7   8   6
@@ -95,10 +173,7 @@ el proceso creyendo que se había completado el círculo.
 "primer alumno otra vez" solo se activa cuando este flag es `true`, que se marca
 únicamente cuando el nombre en Séneca **cambia realmente** por primera vez:
 ```javascript
-// Solo marca al alejarse del primer alumno
 if (VG.primerAlumno != "") haAbandonadoPrimerAlumno = true;
-
-// Condición de parada corregida
 if (haAbandonadoPrimerAlumno && VG.primerAlumno == nombreActual && VG.primerAlumno != "")
     clearInterval(...)
 ```
